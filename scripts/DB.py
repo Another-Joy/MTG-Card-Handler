@@ -1,13 +1,7 @@
-import mysql.connector
 import sys
 import json
-import cv2
-import pytesseract
+import mysql.connector
 from collections import defaultdict
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-import string
-import re
-import numpy as np
 
 
 
@@ -79,7 +73,6 @@ def getPriceFromId(id):
     return (cursor.fetchone()[0])
     
     
-    
 
 # set/reset DB
 
@@ -123,7 +116,7 @@ def create(x, y):
                 create_child_table_query = f"""
                 CREATE TABLE {table_name} (
                     id INT AUTO_INCREMENT PRIMARY KEY,
-                    name VARCHAR(255)
+                    cardid VARCHAR(255)
                 )
                 """
                 cursor.execute(create_child_table_query)
@@ -164,9 +157,7 @@ def create(x, y):
         )
         """
         cursor.execute(create_table_query)
-        with open("out", "w", encoding="utf-8") as sys.stdout:
-            for data in important_data:
-                print(data)
+
         # Insert data into the table
         insert_query = "INSERT IGNORE INTO allcards (name, rarity, `set`, number, price) VALUES (%s, %s, %s, %s, %s)"
         cursor.executemany(insert_query, important_data)
@@ -174,8 +165,10 @@ def create(x, y):
 
         # Commit changes to the database
         conn.commit()
-
-        print("Tables created successfully!")
+        with open("out", "w", encoding="utf-8") as sys.stdout:
+            for data in important_data:
+                print(data)
+            print("Tables created successfully!")
 
     except mysql.connector.Error as e:
         print(f"Error creating tables: {e}")
@@ -430,8 +423,8 @@ def listDB():
 datafile = "C:\\Users\\tiago\\Documents\\COde\\default-cards-20240504090539.json"
 
 
-deletetables()
-create(3, 3)
+#deletetables()
+#create(3, 3)
 
 
 datafile = "C:\\Users\\tiago\\Documents\\COde\\default-cards-20240504090539.json"

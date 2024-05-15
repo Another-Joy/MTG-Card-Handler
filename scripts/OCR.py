@@ -1,7 +1,11 @@
+
+import cv2
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
+import string
+import re
+import numpy as np
 import DB
-
-
-
 
 
 
@@ -134,14 +138,14 @@ def recognizeCardText(path):
 
 
 def getCardId(path):
-    DB.getCardNumber(parseRead(recognizeCardText(getCardImage(path))))
+    return DB.getCardNumber(parseRead(recognizeCardText(getCardImage(path))))
     
     
     
-"""id = getCardId("C:\\Users\\tiago\\Documents\\COde\\esper2.png")[0]
+id = getCardId("C:\\Users\\tiago\\Documents\\COde\\esper2.png")
 print(DB.getNameFromId(id))
 print(DB.getSetFromId(id))
 print(DB.getRarityFromId(id))
 print(DB.getPriceFromId(id))
-print(DB.divideByPrice(id))"""
+print(DB.divideByPrice(id))
 
