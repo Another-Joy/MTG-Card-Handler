@@ -177,11 +177,11 @@ def create(x, y):
 
 # change DB
 
-def add(x, y, element_name):
+def add(x, y, id):
     try:
         table_name = f"slot{x}{y}"
         # Construct the INSERT query
-        insert_query = f"INSERT INTO {table_name} (name) VALUES ('{element_name}')"
+        insert_query = f"INSERT INTO {table_name} (cardid) VALUES ('{id}')"
 
         # Execute the INSERT query
         cursor.execute(insert_query)
@@ -189,7 +189,7 @@ def add(x, y, element_name):
         # Commit changes to the database
         conn.commit()
 
-        print(f"Element '{element_name}' added to {table_name} successfully!")
+        print(f"Element '{id}' added to {table_name} successfully!")
 
     except mysql.connector.Error as e:
         print(f"Error adding element: {e}")
@@ -198,9 +198,9 @@ def add(x, y, element_name):
 def delete(x, y):
     try:
         table_name = f"slot{x}{y}"
-        max_id_query = f"SELECT id, name FROM {table_name} WHERE id = (SELECT MAX(id) FROM {table_name})"
+        max_id_query = f"SELECT id, cardid FROM {table_name} WHERE id = (SELECT MAX(id) FROM {table_name})"
         cursor.execute(max_id_query)
-        max_id, element_name = cursor.fetchone()
+        max_id, id = cursor.fetchone()
 
         if max_id is not None:
             # Delete the row with the maximum ID
@@ -212,9 +212,9 @@ def delete(x, y):
             # Commit changes to the database
             conn.commit()
 
-            print(f"Deleted {element_name} from {table_name} successfully!")
+            print(f"Deleted {id} from {table_name} successfully!")
             
-            return element_name
+            return id
         else:
             print(f"No elements found in {table_name}")
 
@@ -292,10 +292,10 @@ def divideByPrice(id):
 
  
 
-def searchSlot(x, y, element_name):
+def searchSlot(x, y, id):
     try:
         table_name = f"slot{x}{y}"
-        select_query = f"SELECT id FROM {table_name} WHERE name = '{element_name}'"
+        select_query = f"SELECT id FROM {table_name} WHERE cardid = '{id}'"
         cursor.execute(select_query)
 
         # Fetch all rows from the result set
@@ -307,7 +307,7 @@ def searchSlot(x, y, element_name):
             print(f"Found in {table_name}: {element_ids}")
             return element_ids
         else:
-            print(f"No elements with name '{element_name}' found in {table_name}")
+            print(f"No elements with name '{id}' found in {table_name}")
             return []
 
     except mysql.connector.Error as e:
@@ -315,7 +315,7 @@ def searchSlot(x, y, element_name):
         return []
 
 
-def searchDB(element_name):    
+def searchDB(id):    
     # List to store the result for each table
     result = []
 
@@ -325,7 +325,7 @@ def searchDB(element_name):
         for y in range(sizeY):
 
             # Call searchSlot function for each table
-            element_ids = searchSlot(x, y, element_name)
+            element_ids = searchSlot(x, y, id)
 
             # Append the result to the list
             res.append(element_ids)
@@ -334,8 +334,8 @@ def searchDB(element_name):
     return result
 
 
-def inDB(element_name):
-    found = searchDB(element_name)
+def inDB(id):
+    found = searchDB(id)
     res = 0
     for line in found:
         for slot in line:
@@ -394,7 +394,7 @@ def listDB():
                 table_name = f"slot{x}{y}"
 
                 # Select all elements from the current table
-                select_query = f"SELECT name FROM {table_name}"
+                select_query = f"SELECT cardid FROM {table_name}"
                 cursor.execute(select_query)
 
                 # Fetch all rows from the result set
@@ -405,8 +405,14 @@ def listDB():
             
         listed = defaultdict(int)
         
+        for i in range(all_elements):
+            all_elements[0] = getNameFromId(all_elements[0])
+        
         for card in all_elements:
             listed[card] += 1
+        
+        
+        
         
         for card in listed:
             print(f"{card[0]}: {listed[card]}")
