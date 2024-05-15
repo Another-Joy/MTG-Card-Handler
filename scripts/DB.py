@@ -315,7 +315,7 @@ def searchSlot(x, y, id):
         return []
 
 
-def searchDB(id):    
+def searchDB(id, sizeX, sizeY):    
     # List to store the result for each table
     result = []
 
@@ -334,8 +334,8 @@ def searchDB(id):
     return result
 
 
-def inDB(id):
-    found = searchDB(id)
+def inDB(id, sizeX, sizeY):
+    found = searchDB(id, sizeX, sizeY)
     res = 0
     for line in found:
         for slot in line:
@@ -367,7 +367,7 @@ def show(x, y):
         print(f"Error printing elements: {e}")
 
 
-def showTables():
+def showTables(sizeX, sizeY):
     try:        
         for x in range(sizeX):
             for y in range(sizeY):
@@ -378,7 +378,7 @@ def showTables():
         print(f"Error showing elements: {e}")
 
 
-def listDB():
+def listDB(sizeX, sizeY):
     try:   
         print("All cards in DB:")
         print("")
