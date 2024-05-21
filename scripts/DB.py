@@ -46,6 +46,14 @@ def getNameFromId(id):
     cursor.execute(query)
 
     # Fetch the result (assuming only one ID is expected)
+    return (cursor.fetchone()[0]) 
+
+def getNumberFromId(id):
+    query = f"SELECT number FROM allcards WHERE id = \'{id}\'"
+
+    cursor.execute(query)
+
+    # Fetch the result (assuming only one ID is expected)
     return (cursor.fetchone()[0])  
   
 def getRarityFromId(id):
@@ -71,6 +79,14 @@ def getPriceFromId(id):
 
     # Fetch the result (assuming only one ID is expected)
     return (cursor.fetchone()[0])
+
+def getAllFromId(id):
+    query = f"SELECT name, number, `set` FROM allcards WHERE id = \'{id}\'"
+
+    cursor.execute(query)
+
+    # Fetch the result (assuming only one ID is expected)
+    return (cursor.fetchone())
     
     
 
@@ -378,13 +394,8 @@ def showTables(sizeX, sizeY):
         print(f"Error showing elements: {e}")
 
 
-def listDB(sizeX, sizeY):
+def listIDs(sizeX, sizeY):
     try:   
-        print("All cards in DB:")
-        print("")
-        cursor.execute("SHOW TABLES")
-        tables = cursor.fetchall()
-
         # List to store all elements
         all_elements = []
 
@@ -405,24 +416,35 @@ def listDB(sizeX, sizeY):
             
         listed = defaultdict(int)
         
-        for i in range(all_elements):
-            all_elements[0] = getNameFromId(all_elements[0])
-        
         for card in all_elements:
             listed[card] += 1
-        
-        
-        
-        
-        for card in listed:
-            print(f"{card[0]}: {listed[card]}")
-        
+                
         return listed
     
     except mysql.connector.Error as e:
         print(f"Error fetching all elements from all tables: {e}")
         return []
 
+def transformToName(dict: defaultdict):
+    listed = defaultdict(int)
+    
+    for card in dict:
+        listed[getNameFromId(card[0])] += dict[card]
+    return listed
+
+def listNames(sizeX, sizeY):
+    return transformToName(listIDs(sizeX, sizeY))
+
+def transformFull(dict: defaultdict):
+    listed = defaultdict(int)
+    
+    for card in dict:
+        listed["\t".join(getAllFromId(card[0]))] += dict[card]
+    return listed
+
+def listAll(sizeX, sizeY):
+    return transformFull(listIDs(sizeX, sizeY))
+    
 
 
 
@@ -432,8 +454,13 @@ datafile = "C:\\Users\\tiago\\Documents\\COde\\default-cards-20240504090539.json
 #deletetables()
 #create(3, 3)
 
+"""
 
-datafile = "C:\\Users\\tiago\\Documents\\COde\\default-cards-20240504090539.json"
+list = listAll(3, 3)
+for i in list:
+    print(f"{i}\t {list[i]}")
+"""
+
 
 
 # test stuff
