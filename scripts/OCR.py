@@ -1,4 +1,6 @@
-
+import picamera
+import os
+import datetime
 import cv2
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
@@ -136,9 +138,36 @@ def recognizeCardText(path):
     return (pytesseract.image_to_string(roi, config='--psm 6')).strip().lower()
 
 
-
-def getCardId(path):
-    return DB.getCardNumber(parseRead(recognizeCardText(getCardImage(path))))
+    
+def capture_photo():
+    
+    # Define the directory where the photo will be saved
+    save_dir = "/home/pi/photos"  # Change this to your desired directory
+    
+    # Ensure the directory exists, create it if not
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    
+    # Define the filename with the timestamp
+    file_name = f"photo.jpg"
+    
+    # Capture a photo and save it to the specified directory
+    with picamera.PiCamera() as camera:
+        camera.resolution = (1920, 1080)  # Adjust as needed
+        camera.start_preview()
+        # Add a delay to let the camera adjust to lighting conditions, etc.
+        # You can adjust the delay time as needed
+        camera.start_preview()
+        camera.capture(os.path.join(save_dir, file_name))
+        camera.stop_preview()
+    
+    # Return the path to the saved image
+    return os.path.join(save_dir, file_name)
+    
+    
+def getCardId():
+    return DB.getCardNumber(parseRead(recognizeCardText(getCardImage(capture_photo()))))
+    
     
     
     
