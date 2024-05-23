@@ -439,11 +439,30 @@ def transformFull(dict: defaultdict):
     listed = defaultdict(int)
     
     for card in dict:
-        listed["\t".join(getAllFromId(card[0]))] += dict[card]
+        listed[getAllFromId(card[0])] += dict[card]
     return listed
 
 def listAll(sizeX, sizeY):
     return transformFull(listIDs(sizeX, sizeY))
+
+def search(sizeX, sizeY, cardName, cardSet):
+    ids, idsName, idsSet = [], [], []
+    if cardName:
+        for name, id in getAllNames():
+            if cardName in name:
+                idsName.append(id)
+    if cardSet:        
+        for set, id in getAllSets():
+            if cardSet == set:
+                idsSet.append(id)
+    if idsName and idsSet:
+        for i in idsSet:
+            if i in idsName:
+                ids.append(i)
+    return ids
+
+
+
     
 
 
