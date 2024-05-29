@@ -37,6 +37,9 @@ def getCardNumber(buffer):
 
     # Fetch the result (assuming only one ID is expected)
     return cursor.fetchone()[0]
+
+
+
     
 
     
@@ -87,6 +90,15 @@ def getAllFromId(id):
 
     # Fetch the result (assuming only one ID is expected)
     return (cursor.fetchone())
+    
+    
+def getAllNames():
+    pass
+    
+    
+def getAllSets():
+    pass
+    
     
     
 
