@@ -2,10 +2,10 @@ class BOT:
     def __init__(self) -> None:
         self.X = 0
         self.Y = 0
-        self.Xoff =
-        self.Xstep =
-        self.Yoff =
-        self.Ystep =
+        self.Xoff =0
+        self.Xstep =0
+        self.Yoff =0
+        self.Ystep =0
         return
         
     def moveArm(self, X, Y):

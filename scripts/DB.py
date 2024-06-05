@@ -93,11 +93,21 @@ def getAllFromId(id):
     
     
 def getAllNames():
-    pass
+    query = f"SELECT name, id FROM allcards"
+        
+    cursor.execute(query)
+
+    return (cursor.fetchall())
     
     
-def getAllSets():
-    pass
+    
+def getAllSets():    
+    query = f"SELECT `set`, id FROM allcards"
+        
+    cursor.execute(query)
+
+    return (cursor.fetchall())
+
     
     
     
@@ -300,7 +310,7 @@ def selectSlotToPlace(rarity):
     # Commit the transaction
     conn.commit()
 
-    return slots[0]
+    return [slots[0][4], slots[0][5]]
     
 def divideByPrice(id):
     query = f"SELECT rarity, price FROM allcards WHERE id = {id}"
