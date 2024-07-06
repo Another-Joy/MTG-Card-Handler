@@ -1,4 +1,4 @@
-import OCR
+#import OCR
 import DB
 import BOT
 import config
@@ -17,7 +17,7 @@ def scanAndOrganize():
         slotIn = bot.checkInput()
         
 def takeCard(name, set = 0):
-    if 
+    pass
 
 
 

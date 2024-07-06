@@ -41,47 +41,14 @@ def getCardNumber(buffer):
 
 
     
-
-    
-def getNameFromId(id):
-    query = f"SELECT name FROM allcards WHERE id = \'{id}\'"
+def getFromId(id, buffer):
+    query = f"SELECT \'{buffer}\' FROM allcards WHERE id = \'{id}\'"
 
     cursor.execute(query)
 
     # Fetch the result (assuming only one ID is expected)
     return (cursor.fetchone()[0]) 
 
-def getNumberFromId(id):
-    query = f"SELECT number FROM allcards WHERE id = \'{id}\'"
-
-    cursor.execute(query)
-
-    # Fetch the result (assuming only one ID is expected)
-    return (cursor.fetchone()[0])  
-  
-def getRarityFromId(id):
-    query = f"SELECT rarity FROM allcards WHERE id = \'{id}\'"
-
-    cursor.execute(query)
-
-    # Fetch the result (assuming only one ID is expected)
-    return (cursor.fetchone()[0]) 
-   
-def getSetFromId(id):
-    query = f"SELECT `set` FROM allcards WHERE id = \'{id}\'"
-
-    cursor.execute(query)
-
-    # Fetch the result (assuming only one ID is expected)
-    return (cursor.fetchone()[0])
-    
-def getPriceFromId(id):
-    query = f"SELECT price FROM allcards WHERE id = \'{id}\'"
-
-    cursor.execute(query)
-
-    # Fetch the result (assuming only one ID is expected)
-    return (cursor.fetchone()[0])
 
 def getAllFromId(id):
     query = f"SELECT name, number, `set` FROM allcards WHERE id = \'{id}\'"
@@ -451,7 +418,7 @@ def transformToName(dict: defaultdict):
     listed = defaultdict(int)
     
     for card in dict:
-        listed[getNameFromId(card[0])] += dict[card]
+        listed[getFromId(card[0], "name")] += dict[card]
     return listed
 
 def listNames(sizeX, sizeY):
