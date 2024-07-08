@@ -109,7 +109,7 @@ def create(x, y):
         CREATE TABLE ParentTable (
             id INT AUTO_INCREMENT PRIMARY KEY,
             table_name VARCHAR(255),
-            rarity VARCHAR(50)
+            table_type VARCHAR(50)
         )
         """
         cursor.execute(create_parent_table_query)
@@ -128,7 +128,7 @@ def create(x, y):
 
                 # Insert the child table name into the parent table
                 insert_table_name_query = f"""
-                INSERT INTO ParentTable (table_name, rarity) VALUES ('{table_name}', 'n')
+                INSERT INTO ParentTable (table_name, table_type) VALUES ('{table_name}', 'n')
                 """
                 cursor.execute(insert_table_name_query)
                 
@@ -248,14 +248,14 @@ def move(fromX, fromY, toX, toY):
 # vm - valueable mythic (+1e)
 # e - error
 
-def slotRarity(rarity):
-    query = f"SELECT table_name FROM ParentTable WHERE rarity = {rarity}"
+def slotType(rarity):
+    query = f"SELECT table_name FROM ParentTable WHERE table_type = {rarity}"
     cursor.execute(query)
     result = cursor.fetchall()
     return result
 
 def selectSlotToPlace(rarity):
-    slots = slotRarity(rarity)
+    slots = slotType(rarity)
     slot = ""
     for i in slots:
         query = f"SELECT COUNT(*) FROM {i}"
@@ -265,7 +265,7 @@ def selectSlotToPlace(rarity):
         if (int(cursor.fetchone()[0]) < 200):
             return slot
     
-    slots = slotRarity("n")
+    slots = slotType("n")
 
     update_query = f"""
     UPDATE ParentTable 
@@ -285,6 +285,7 @@ def divideByPrice(id):
     rarity, price = cursor.fetchone()
     if price == None: return "e"
     price = float(price)
+    
     match rarity:
         case "c": return "c" if price < 0.3 else "vc"
         case "u": return "u" if price < 0.3 else "vu"
@@ -320,7 +321,7 @@ def searchSlot(x, y, id):
         return []
 
 
-def searchDB(id, sizeX, sizeY):    
+def searchDB(id, sizeX, sizeY):
     # List to store the result for each table
     result = []
 
@@ -434,22 +435,22 @@ def transformFull(dict: defaultdict):
 def listAll(sizeX, sizeY):
     return transformFull(listIDs(sizeX, sizeY))
 
-def search(sizeX, sizeY, cardName, cardSet):
+def searchIds(sizeX, sizeY, cardName, cardSet = None):
     ids, idsName, idsSet = [], [], []
-    if cardName:
-        for name, id in getAllNames():
-            if cardName in name:
-                idsName.append(id)
-    if cardSet:        
-        for set, id in getAllSets():
-            if cardSet == set:
-                idsSet.append(id)
-    if idsName and idsSet:
-        for i in idsSet:
-            if i in idsName:
-                ids.append(i)
-    return ids
+    
+    query = f"SELECT id FROM allcards WHERE name = \'{cardName}\'"
+    
+    cursor.execute(query)
 
+    idName = cursor.fetchall()
+    if cardSet:    
+        query = f"SELECT id FROM allcards WHERE `set` = \'{cardSet}\' AND name = \'{cardName}\'"
+        
+        cursor.execute(query)
+
+        idSet = cursor.fetchone()
+        return (idSet, idName)
+    return idName
 
 
     
