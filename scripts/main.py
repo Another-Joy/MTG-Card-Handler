@@ -18,34 +18,70 @@ def scanAndOrganize():
         
         
 
-def takeCard(name, set = None):
-    out = selectOutput()
-    targets = DB.searchIds(config.sizeX, config.sizeY, name, set)
-    results = []
-    for id in targets:
-        ids = DB.searchDB(id, config.sizeX, config.sizeY)
-        x = -1
-        for line in ids:
-            x += 1
-            y = -1
-            for list in line:
-                y += 1
-                results.append([x, y, place] for place in list)
-                
-    results = sortFinds(results)
+
+
+
+def sortFinds(inp):
+    return sorted(inp, key=lambda x: (x[0], x[1], x[2]))
+        
+def takeCards(cards):
+    
+    slotOut = bot.checkOutput()
+    
+    spots = []
+    for i in range(len(cards)):
+        targets = DB.searchIds(config.sizeX, config.sizeY, cards[i][0])
+        results = []
+
+        step = 0
+        for j in range(len(cards)):
+            if cards[j] == cards[i] and not j == i:
+                step += 1
+
+        i += step
+
+        for id in targets:
+            ids = DB.searchDB(id, config.sizeX, config.sizeY)
+            x = -1
+            for line in ids:
+                x += 1
+                y = -1
+                for list in line:
+                    y += 1
+                    results.append([x, y, place] for place in list)
+        if step > len(results):
+            step = len(results)
+        spots.extend(results[:step+1])
+
+
+    results = sortFinds(spots)
     
     for i in range(len(results)):
         x, y, place = results[i]
         bot.thinUntil(x, y, place)
-        bot.moveCard(x, y, out[0], out[1])
+        bot.moveCard(x, y, slotOut[0], slotOut[1])
         try:
             if results[i+1][0] == results[i][0] and results[i+1][1] == results[i][1]:
                 continue 
         except:
+            pass
         bot.dump(x, y)
+    
 
-        
+def single(buf):
+    if '\n' in buf:
+        buf = buf.split("\n")
+        cards = [(int(s.split(' ', 1)[0]), s.split(' ', 1)[1]) for s in buf]
+    else:
+        cards = split_strings = [(int(buf.split(' ', 1)[0]), buf.split(' ', 1)[1]) if buf[0].isdigit() else (1, buf)]
 
+    targets = []
+    for card in cards:
+        targets.extend( [card[1]] * card[0] )
+
+    targets = sorted(targets)
+
+    takeCards(targets)
 
 
 

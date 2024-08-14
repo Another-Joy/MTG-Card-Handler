@@ -8,8 +8,9 @@ from collections import defaultdict
     # Connect to MariaDB
 conn = mysql.connector.connect(
     host="localhost",
-    user="root",
-    database="mysql"
+    user="tiago",
+    password="talapf4002",
+    database="mtghandler"
 )
 cursor = conn.cursor()
     # Create a cursor object to execute SQL commands
@@ -442,13 +443,14 @@ def searchIds(sizeX, sizeY, cardName, cardSet = None):
     
     cursor.execute(query)
 
-    idName = cursor.fetchall()
+    idName = [item for tup in cursor.fetchall() for item in tup]
+
     if cardSet:    
         query = f"SELECT id FROM allcards WHERE `set` = \'{cardSet}\' AND name = \'{cardName}\'"
         
         cursor.execute(query)
-
-        idSet = cursor.fetchone()
+        
+        idSet = cursor.fetchone()[0]
         return (idSet, idName)
     return idName
 
@@ -457,13 +459,14 @@ def searchIds(sizeX, sizeY, cardName, cardSet = None):
 
 
 
-datafile = "C:\\Users\\tiago\\Documents\\COde\\default-cards-20240504090539.json"
+datafile = "/home/tiago/Code/default-cards-20240803090619.json"
+with open('out', 'w') as sys.stdout:
+    print(searchIds(2, 2, "Sphinx of Clear Skies", "dmu"))
 
+"""with open('out', 'w') as sys.stdout:
+    deletetables()
+    create(2, 2)
 
-#deletetables()
-#create(3, 3)
-
-"""
 
 list = listAll(3, 3)
 for i in list:
